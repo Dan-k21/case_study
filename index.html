@@ -2,52 +2,223 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>[*Bài tập] Phát triển ứng dụng mô phỏng lại quá trình mèo bắt chuột và ăn chuột.</title>
+    <title>Quản Lý</title>
+    <style>
+        img {
+            width: 50px;
+            height: 50px;
+        }
+        body {
+            background-image: url("https://visanuocngoai.vn/wp-content/uploads/2022/10/cho-corgi-cua-nuoc-nao-2.jpg");
+        }
+    </style>
 </head>
 <body>
+<center>
+    <div id="form"></div>
+    <h1>My Store</h1>
+    <input type="text" id="input">
+    <button onclick="search()">Search</button>
+    <br>
+    <br>
+    <button onclick="showFormAdd()">Add</button>
+    <table border="1" cellspacing="0" style="margin-top: 10px">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Img</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th colspan="2">Action</th>
+        </tr>
+        <tbody id="products"></tbody>
+    </table>
+</center>
 <script>
-    function Rat(name,weight,speed) {
-        this.name = name;
-        this.weight = weight;
-        this.speed = speed;
-        this.isDead = false;
-        this.speak = function() {
-            console.log('chit chit...')
+    class Product {
+        id;
+        name;
+        img;
+        quantity;
+        price;
+
+        constructor(id, name, img, quantity, price) {
+            this.id = id
+            this.name = name
+            this.img = img
+            this.quantity = quantity
+            this.price = price
         }
     }
-    function Cat(name,weight,speed) {
-        this.name = name;
-        this.weight = weight;
-        this.speed = speed;
-        this.speak = function() {
-            console.log('meo meo...')
+    // localStorage.setItem('listProduct', JSON.stringify([]))
+    class Store {
+        listProduct;
+
+        constructor() {
+            this.listProduct = JSON.parse(localStorage.getItem('listProduct'))
         }
-        this.canCatchMouse = function(mouse) {
-            if (this.speed > mouse.speed) {
-                console.log(`${this.name} can catch ${mouse.name}.`);
-                return true
-            } else return false
+
+        add(newProduct) {
+            this.listProduct.push(newProduct)
+            localStorage.setItem('listProduct', JSON.stringify(this.listProduct))
         }
-        this.eat = function(mouse) {
-            if (this.canCatchMouse(mouse) && mouse.isDead === false) {
-                this.weight += mouse.weight;
-                mouse.isDead = true;
-                mouse.weight = 0;
-                console.log(`${this.name}  eat ${mouse.name} successful`)
-            } else {
-                console.log(`${this.name} can't eat ${mouse.name} `)
+
+        findAll() {
+            this.listProduct = JSON.parse(localStorage.getItem('listProduct'))
+            return this.listProduct
+        }
+
+        remove(index) {
+            this.listProduct.splice(index, 1)
+            localStorage.setItem('listProduct', JSON.stringify(this.listProduct))
+        }
+    }
+
+    let store = new Store()
+    let productInStore = store.findAll()
+
+    function showAll() {
+        let str = ''
+        for (let i = 0; i < productInStore.length; i++) {
+            str += `
+            <tr>
+                <td>${productInStore[i].id}</td>
+                <td>${productInStore[i].name}</td>
+                <td><img src="${productInStore[i].img}"></td>
+                <td>${productInStore[i].quantity}</td>
+                <td>${productInStore[i].price}</td>
+                <td><button onclick="showFormEdit(${i})">Edit</button></td>
+                <td><button onclick="remove(${i})">Remove</button></td>
+            </tr>
+            `
+        }
+        document.getElementById('products').innerHTML = str
+    }
+
+    showAll()
+
+    function showFormAdd() {
+        document.getElementById('form').innerHTML = `
+        <center>
+        <h1>Add</h1>
+            <table border="0.5" style="border: 1px solid">
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="number" id="id1"></td>
+                </tr>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" id="name1"></td>
+                </tr>
+                <tr>
+                    <td>Img:</td>
+                    <td><input type="text" id="img1"></td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td><input type="number" id="quantity1"></td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td><input type="number" id="price1"></td>
+                </tr>
+                <tr>
+                    <td><button onclick="add()">Add</button></td>
+                </tr>
+            </table>
+        </center>
+        `
+    }
+
+    function add() {
+        let id = document.getElementById('id1').value;
+        let name = document.getElementById('name1').value;
+        let img = document.getElementById('img1').value;
+        let quantity = document.getElementById('quantity1').value;
+        let price = document.getElementById('price1').value;
+        let newProduct = new Product(id, name, img, quantity, price);
+        store.add(newProduct)
+        showAll()
+        document.getElementById('form').innerHTML = ''
+    }
+
+    function remove(index) {
+        let isConfirm = confirm('Bạn có muốn xóa không ?')
+        if (isConfirm) {
+            store.remove(index)
+            showAll()
+        }
+    }
+
+    function showFormEdit(index) {
+        document.getElementById('form').innerHTML = `
+        <center>
+        <h1>Edit</h1>
+            <table border="0.5" style="border: 1px solid">
+                <tr>
+                    <td>ID:</td>
+                    <td><input type="number" value="${productInStore[index].id}" id="id2"></td>
+                </tr>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" value="${productInStore[index].name}" id="name2"></td>
+                </tr>
+                <tr>
+                    <td>Img:</td>
+                    <td><img src="${productInStore[index].img}" alt=""><input type="text" id="img2"></td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td><input type="number" value="${productInStore[index].quantity}" id="quantity2"></td>
+                </tr>
+                <tr>
+                    <td>Price:</td>
+                    <td><input type="number" value="${productInStore[index].price}" id="price2"></td>
+                </tr>
+                <tr>
+                    <td><button onclick="edit(${index})">Save</button></td>
+                </tr>
+            </table>
+        </center>
+        `
+    }
+
+    function edit(index) {
+        let id = +document.getElementById('id2').value;
+        let name = document.getElementById('name2').value;
+        let img = document.getElementById('img2').value;
+        let quantity = +document.getElementById('quantity2').value;
+        let price = +document.getElementById('price2').value;
+        let editProduct = new Product(id, name, quantity, price);
+        productInStore[index].id = id;
+        productInStore[index].name = name;
+        productInStore[index].img = img;
+        productInStore[index].quantity = quantity;
+        productInStore[index].price = price;
+        showAll()
+        document.getElementById('form').innerHTML = ''
+    }
+
+    function search() {
+        let value = document.getElementById('input').value;
+        let str = ''
+        for (let i = 0; i < productInStore.length; i++) {
+            if (productInStore[i].name.toLowerCase().indexOf(value.toLowerCase()) !== -1) {
+                str += `
+            <tr>
+                <td>${productInStore[i].id}</td>
+                <td>${productInStore[i].name}</td>
+                <td><img src="${productInStore[i].img}"></td>
+                <td>${productInStore[i].quantity}</td>
+                <td>${productInStore[i].price}</td>
+                <td><button onclick="showFormEdit(${i})">Edit</button></td>
+                <td><button onclick="remove(${i})">Remove</button></td>
+            </tr>
+            `
             }
         }
+        document.getElementById('products').innerHTML = str;
     }
-    var Tom = new Cat('tom',10,12);
-    var Jerry = new Rat('jerry',2,10);
-    console.log(Tom);
-    console.log(Jerry);
-    Tom.eat(Jerry);
-    console.log(Tom);
-    console.log(Jerry);
 </script>
 </body>
 </html>

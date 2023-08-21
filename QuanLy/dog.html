@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box {
+            margin-left: -10px;
+            width: 1922px;
+            height: 45px;
+            background-color: #fcb900;
+            font-family: 'Bricolage Grotesque', sans-serif;
+        }
+        #products {
+            display: flex;
+            width: 1200px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        #ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        #ul li {
+            padding: 14px 20px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        #products img {
+
+        }
+    </style>
+</head>
+<body>
+<table style="margin-left: 400px">
+    <tr>
+        <th>
+            <img src="https://dogily.vn/wp-content/uploads/2020/07/dogily-logo.png" width="200">
+        </th>
+        <th>
+            <input id="inputSearch1" type="text" placeholder="Tìm kiếm..." style="width: 500px; height: 40px; border: 2px solid #fcb900">
+        </th>
+        <th>
+            <button onclick="searchDog()" style="margin-left: -4px"><img src="https://icons.iconarchive.com/icons/custom-icon-design/mono-general-2/128/search-icon.png" width="37"></button>
+        </th>
+    </tr>
+</table>
+<div class="box">
+    <ul id="ul">
+        <li><a href="dog.html">Chó</a></li>
+        <li><a href="cat.html">Mèo</a></li>
+    </ul>
+</div>
+<div id="form1"></div>
+<button onclick="showFormAddDog()" style="margin-left: 1800px; margin-top: 10px">Thêm</button>
+<center>
+    <div id="products1"></div>
+</center>
+<script src="JsDog/entity/product.js"></script>
+<script src="JsDog/manager/store.js"></script>
+<script src="JsDog/view/main.js"></script>
+</body>
+</html>
